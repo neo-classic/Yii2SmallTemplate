@@ -46,11 +46,6 @@ $config = [
             ],*/
         ]
     ],
-    'modules' => [
-        'user' => [
-            'class' => 'app\modules\user\Module',
-        ],
-    ],
     'params' => $params,
 ];
 
