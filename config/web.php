@@ -18,6 +18,10 @@ $config = [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
         ],
+        'authManager' => [
+            'class' => 'yii\rbac\PhpManager',
+            'defaultRoles' => ['user', 'client', 'admin'],
+        ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
