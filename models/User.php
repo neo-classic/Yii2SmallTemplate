@@ -17,6 +17,7 @@ use yii\web\IdentityInterface;
  * @property integer $status_id
  * @property integer $created_date
  * @property integer $last_visit_date
+ * @property integer $role
  */
 
 class User extends ActiveRecord implements IdentityInterface
@@ -49,6 +50,8 @@ class User extends ActiveRecord implements IdentityInterface
             ['status_id', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
         ];
     }
+
+
 
     /**
      * @inheritdoc
@@ -179,5 +182,15 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    public static function getRoleArray()
+    {
+        return [
+            self::ROLE_USER => 'Пользователь',
+            self::ROLE_CLIENT => 'Клиент',
+            self::ROLE_MANAGER => 'Менеджер',
+            self::ROLE_ADMIN => 'Админ',
+        ];
     }
 } 
