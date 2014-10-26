@@ -50,8 +50,10 @@ AppAsset::register($this);
         ],
     ]);
     echo Nav::widget([
+        'encodeLabels' => false,
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
+            ['label' => '<i class="fa fa-users text-success"></i> Пользователи', 'url' => ['/admin/user']],
             Yii::$app->user->isGuest ?
                 ['label' => 'Login', 'url' => ['/user/login']] :
                 ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',
@@ -79,7 +81,7 @@ AppAsset::register($this);
             </div>
             <div class="<?php if (!empty($this->menu)): ?>col-lg-10 col-sm-8 col-md-9 col-xs-8<?php else:?>col-sm-12<?php endif; ?>">
                 <?php
-                //$this->renderPartial('application.views.common._flashMessage');
+                echo $this->render('@app/views/common/_flashMessage');
                 echo $content;
                 ?>
             </div>

@@ -6,18 +6,18 @@ use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
 /**
- * User model
+ * This is the model class for table "user".
  *
  * @property integer $id
  * @property string $username
+ * @property string $email
  * @property string $password
  * @property string $password_reset_token
- * @property string $email
  * @property string $auth_key
  * @property integer $status_id
- * @property integer $created_date
- * @property integer $last_visit_date
  * @property integer $role
+ * @property string $created_date
+ * @property string $last_visit_date
  */
 
 class User extends ActiveRecord implements IdentityInterface
@@ -29,6 +29,8 @@ class User extends ActiveRecord implements IdentityInterface
     const ROLE_CLIENT = 5;
     const ROLE_MANAGER = 10;
     const ROLE_ADMIN = 15;
+
+    public $old_password_hash = '';
 
     /**
      * @inheritdoc
@@ -44,13 +46,25 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            ['username', 'required'],
-
-            ['status_id', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status_id', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            [['username', 'email', 'password'], 'required'],
+            [['status_id', 'role'], 'integer'],
+            [['created_date', 'last_visit_date'], 'safe'],
+            [['username'], 'string', 'max' => 45],
+            [['email', 'password', 'password_reset_token', 'auth_key'], 'string', 'max' => 255]
         ];
     }
 
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'id',
+            'username' => 'Логин',
+            'email' => 'E-mail',
+            'status_id' => 'Статус',
+            'role' => 'Роль',
+            'created_date' => 'Дата создания',
+        ];
+    }
 
 
     /**
@@ -193,4 +207,19 @@ class User extends ActiveRecord implements IdentityInterface
             self::ROLE_ADMIN => 'Админ',
         ];
     }
+
+    public static function getStatusArray()
+    {
+        return [
+            self::STATUS_DELETED => 'Выкл',
+            self::STATUS_ACTIVE => 'Вкл',
+        ];
+    }
+
+    public function afterFind()
+    {
+        $this->old_password_hash = $this->password;
+        parent::afterFind();
+    }
+
 } 
