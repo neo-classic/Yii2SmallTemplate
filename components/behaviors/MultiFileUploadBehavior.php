@@ -35,7 +35,7 @@ class MultiFileUploadBehavior extends Behavior
                     $fileModel->{$this->relatedModelField} = $fileName;
                     $fileModel->save();
                 } else {
-                    die(var_dump($file->getError()));
+                    die(var_dump($file->getErrors()));
                 }
             }
         }
@@ -74,8 +74,7 @@ class MultiFileUploadBehavior extends Behavior
 
     public function beforeDelete($event)
     {
-        $models = ActiveRecord::model($this->relatedModel)->findAllByAttributes(array($this->relatedOwnerField => $this->owner->getPrimaryKey()));
-        $models =
+        $models = call_user_func([$this->relatedModel, 'findAll'], [$this->relatedModelField => $this->owner->getPrimaryKey()]);
         foreach ($models as $model)
             $this->deleteFile($model->{$this->relatedModelField});
     }

@@ -53,6 +53,7 @@ AppAsset::register($this);
         'encodeLabels' => false,
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
+            ['label' => '<i class="fa fa-angellist text-primary"></i> Тест', 'url' => ['/admin/test']],
             ['label' => '<i class="fa fa-users text-success"></i> Пользователи', 'url' => ['/admin/user']],
             Yii::$app->user->isGuest ?
                 ['label' => 'Login', 'url' => ['/user/login']] :
