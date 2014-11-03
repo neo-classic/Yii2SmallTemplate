@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\models;
 
+use app\components\behaviors\ImageUploadBehavior;
 use app\components\behaviors\MultiFileUploadBehavior;
 use app\components\behaviors\TransliterateUrlBehavior;
 use Yii;
@@ -21,6 +22,9 @@ use Yii;
  */
 class Test extends \yii\db\ActiveRecord
 {
+    const LOGO_FIELD = 'logo';
+    const IMAGE_FIELD = 'image';
+
     public $imageArray;
     /**
      * @inheritdoc
@@ -42,6 +46,18 @@ class Test extends \yii\db\ActiveRecord
                 'relatedOwnerField' => 'test_id',
             ], [
                 'class' => TransliterateUrlBehavior::className(),
+            ], [
+                'class' => ImageUploadBehavior::className(),
+                'fields' => [
+                    'logo' => [
+                        'path' => 'uploads/test/logo',
+                        'translitField' => 'title',
+                    ],
+                    'image' => [
+                        'path' => 'uploads/test/image',
+                        'translitField' => 'title',
+                    ],
+                ],
             ],
         ];
     }

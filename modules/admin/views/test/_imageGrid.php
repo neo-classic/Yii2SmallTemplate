@@ -20,7 +20,7 @@ echo GridView::widget([
             'header' => 'Изображение',
             'format' => 'raw',
             'value' => function ($data) use($model) {
-                return Html::img($model->getMultiFileUrl() . $data->file, ['class' => 'img-polaroid', 'height' => '100']);
+                return Html::img($model->getMultiFileUrl() . $data->file, ['class' => 'img-thumbnail', 'style' => 'height: 100px;']);
             }
         ],
         'file',

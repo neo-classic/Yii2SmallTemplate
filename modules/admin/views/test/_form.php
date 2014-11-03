@@ -16,9 +16,23 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'url')->textInput(['maxlength' => 50]) ?>
 
-    <?= $form->field($model, 'logo')->textInput(['maxlength' => 255]) ?>
+    <?php
+    echo $form->field($model, 'logo')->fileInput();
+    if ($model->logo) {
+        echo '<div class="form-group">';
+        echo Html::img($model->getImageUrl(\app\modules\admin\models\Test::LOGO_FIELD), ['class' => 'img-thumbnail', 'style' => 'width: 200px;']);
+        echo "</div>";
+    }
+    ?>
 
-    <?= $form->field($model, 'image')->textInput(['maxlength' => 255]) ?>
+    <?php
+    echo $form->field($model, 'image')->fileInput();
+    if ($model->image) {
+        echo '<div class="form-group">';
+        echo Html::img($model->getImageUrl(\app\modules\admin\models\Test::IMAGE_FIELD), ['class' => 'img-thumbnail', 'style' => 'width: 200px;']);
+        echo "</div>";
+    }
+    ?>
 
     <?php
     echo $form->field($model, 'imageArray[]')->fileInput(['multiple' => '']);
