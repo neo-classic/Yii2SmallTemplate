@@ -3,8 +3,8 @@ namespace app\modules\admin\controllers;
 
 use app\modules\admin\components\AdminController;
 use app\modules\admin\models\Test;
+use app\modules\admin\models\TestImage;
 use yii\data\ActiveDataProvider;
-use yii\helpers\VarDumper;
 
 class TestController extends AdminController
 {
@@ -32,6 +32,7 @@ class TestController extends AdminController
     public function actionUpdate($id)
     {
         $model = $this->loadModel('app\modules\admin\models\Test', $id);
+        $this->massImageDelete();
         if ($model->load(\Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['update', 'id' => $model->id]);
         }
@@ -41,9 +42,25 @@ class TestController extends AdminController
         ]);
     }
 
+    private function massImageDelete() {
+        if (\Yii::$app->request->post('massImageDelete')) {
+            foreach (\Yii::$app->request->post('massImageDelete') as $imgId) {
+                TestImage::findOne($imgId)->delete();
+            }
+        }
+    }
+
     public function actionDelete($id)
     {
         $this->loadModel('app\modules\admin\models\Test', $id)->delete();
         return $this->redirect(['index']);
+    }
+
+    public function actionDeleteImage($id)
+    {
+        if (\Yii::$app->request->isAjax) {
+            $this->loadModel('app\modules\admin\models\TestImage', $id)->delete();
+        }
+        \Yii::$app->end();
     }
 }

@@ -23,9 +23,9 @@ class MultiFileUploadBehavior extends Behavior
         ];
     }
 
-    private function saveModels($event)
+    public function saveModels($event)
     {
-        $files = UploadedFile::getInstance($this->owner, $this->fileField);
+        $files = UploadedFile::getInstances($this->owner, $this->fileField);
         if (isset($files) && count($files) > 0) {
             foreach ($files as $k => $file) {
                 $fileName = $this->_getFileName($file);
@@ -56,15 +56,15 @@ class MultiFileUploadBehavior extends Behavior
 
     public function getMultiFilePath()
     {
-        return \Yii::$app->basePath . '/' . $this->savePath . '/' . $this->owner->getPrimaryKey() . '/';
+        return $this->_getFolder();
     }
 
-    public function getFilePath()
+    public function getMultiFileUrl()
     {
-        return $this->getMultiFilePath();
+        return \Yii::$app->params['urlImg'] . $this->savePath . '/' . $this->owner->getPrimaryKey() . '/';
     }
 
-    public function deleteFile($fileName)
+    public function deleteMultiFile($fileName)
     {
         $file = $this->_getFolder() . $fileName;
         if (file_exists($file) && !is_dir($file)) {
@@ -76,6 +76,6 @@ class MultiFileUploadBehavior extends Behavior
     {
         $models = call_user_func([$this->relatedModel, 'findAll'], [$this->relatedModelField => $this->owner->getPrimaryKey()]);
         foreach ($models as $model)
-            $this->deleteFile($model->{$this->relatedModelField});
+            $this->deleteMultiFile($model->{$this->relatedModelField});
     }
 } 

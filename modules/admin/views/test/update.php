@@ -7,7 +7,6 @@ use yii\helpers\Html;
 
 $this->title = 'Update Test: ' . ' ' . $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Tests', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="test-update">

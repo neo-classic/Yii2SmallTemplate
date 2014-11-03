@@ -54,4 +54,20 @@ class TestImage extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Test::className(), ['id' => 'test_id']);
     }
+
+    public function beforeDelete()
+    {
+        $file = $this->getImagePath() . $this->file;
+        if (file_exists($file) && !is_dir($file)) {
+            unlink($file);
+        }
+
+        return parent::beforeDelete();
+    }
+
+    public function getImagePath()
+    {
+        return \Yii::getAlias('@webroot') . '/uploads/test/' . $this->test_id . '/';
+    }
+
 }

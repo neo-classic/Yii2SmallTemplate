@@ -20,7 +20,7 @@ use Yii;
  */
 class Test extends \yii\db\ActiveRecord
 {
-    public $imageArray = [];
+    public $imageArray;
     /**
      * @inheritdoc
      */
@@ -32,7 +32,7 @@ class Test extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return [
-            [
+            'multiFileUploader' => [
                 'class' => MultiFileUploadBehavior::className(),
                 'savePath' => 'uploads/test',
                 'fileField' => 'imageArray',
@@ -69,6 +69,7 @@ class Test extends \yii\db\ActiveRecord
             'image' => 'Image',
             'created_date' => 'Добавлено',
             'updated_date' => 'Обновлено',
+            'imageArray' => 'Фотки',
         ];
     }
 

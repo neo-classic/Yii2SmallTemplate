@@ -10,7 +10,7 @@ use yii\widgets\ActiveForm;
 
 <div class="test-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => 50]) ?>
 
@@ -20,9 +20,14 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'image')->textInput(['maxlength' => 255]) ?>
 
-    <?= $form->field($model, 'created_date')->textInput() ?>
+    <?php
+    echo $form->field($model, 'imageArray[]')->fileInput(['multiple' => '']);
 
-    <?= $form->field($model, 'updated_date')->textInput() ?>
+    $images = $model->getImages();
+    if (!empty($images)) {
+        echo $this->render('_imageGrid', ['model' => $model]);
+    }
+    ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
