@@ -3,6 +3,7 @@
 namespace app\modules\admin\models;
 
 use app\components\behaviors\MultiFileUploadBehavior;
+use app\components\behaviors\TransliterateUrlBehavior;
 use Yii;
 
 /**
@@ -39,6 +40,8 @@ class Test extends \yii\db\ActiveRecord
                 'relatedModel' => 'app\modules\admin\models\TestImage',
                 'relatedModelField' => 'file',
                 'relatedOwnerField' => 'test_id',
+            ], [
+                'class' => TransliterateUrlBehavior::className(),
             ],
         ];
     }
@@ -49,7 +52,7 @@ class Test extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'url'], 'required'],
+            [['title'], 'required'],
             [['created_date', 'updated_date', 'imageArray'], 'safe'],
             [['title', 'url'], 'string', 'max' => 50],
             [['logo', 'image'], 'string', 'max' => 255]
