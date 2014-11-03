@@ -18,4 +18,14 @@ class CommonController extends Controller
             throw new NotFoundHttpException('Запрашиваемая страница не найдена');
         }
     }
+
+    public function loadModelByUrl($class, $url)
+    {
+        $model = call_user_func([$class, 'findOne'], ['url' => $url]);
+        if ($model !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('Запрашиваемая страница не найдена');
+        }
+    }
 } 
