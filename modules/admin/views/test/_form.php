@@ -20,7 +20,7 @@ use yii\widgets\ActiveForm;
     echo $form->field($model, 'logo')->fileInput();
     if ($model->logo) {
         echo '<div class="form-group">';
-        echo Html::img($model->getImageUrl(\app\modules\admin\models\Test::LOGO_FIELD), ['class' => 'img-thumbnail', 'style' => 'width: 200px;']);
+        echo Html::img($model->getImageThumbUrl(\app\modules\admin\models\Test::LOGO_FIELD), ['class' => 'img-thumbnail']);
         echo "</div>";
     }
     ?>
@@ -29,7 +29,7 @@ use yii\widgets\ActiveForm;
     echo $form->field($model, 'image')->fileInput();
     if ($model->image) {
         echo '<div class="form-group">';
-        echo Html::img($model->getImageUrl(\app\modules\admin\models\Test::IMAGE_FIELD), ['class' => 'img-thumbnail', 'style' => 'width: 200px;']);
+        echo Html::img($model->getImageThumbUrl(\app\modules\admin\models\Test::IMAGE_FIELD), ['class' => 'img-thumbnail']);
         echo "</div>";
     }
     ?>

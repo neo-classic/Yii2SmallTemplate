@@ -4,6 +4,7 @@ namespace app\components\behaviors;
 use app\components\helpers\CommonHelper;
 use yii\base\Behavior;
 use yii\db\ActiveRecord;
+use yii\imagine\Image;
 use yii\web\UploadedFile;
 
 class ImageUploadBehavior extends Behavior
@@ -54,9 +55,8 @@ class ImageUploadBehavior extends Behavior
 
                     $folder = $this->getFolderPath($field);
                     $this->_fileInstance[$field]->saveAs($folder . $this->getFileName($field));
-                    /*\Yii::$app->image->load($folder . $this->owner->{$field})->
-                    resize(160, 90, Image::WIDTH)->quality(90)->
-                    save($folder . 'thumb_' . $this->getFileName($field));*/
+                    Image::thumbnail($folder . $this->getFileName($field), 160, 90)
+                        ->save($folder . 'thumb_' . $this->getFileName($field), ['quality' => 90]);
                 } else {
                     continue;
                 }
