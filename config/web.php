@@ -1,6 +1,7 @@
 <?php
 
 $params = require(__DIR__ . '/params.php');
+$url = require(__DIR__ . '/url.php');
 
 $config = [
     'id' => 'basic',
@@ -43,6 +44,7 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'rules' => $url,
         ]
     ],
     'modules' => [

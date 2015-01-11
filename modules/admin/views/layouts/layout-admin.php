@@ -56,6 +56,7 @@ AppAsset::register($this);
         'items' => [
             ['label' => '<i class="fa fa-angellist text-primary"></i> Тест', 'url' => ['/admin/test']],
             ['label' => '<i class="fa fa-users text-success"></i> Пользователи', 'url' => ['/admin/user']],
+            ['label' => '<i class="fa fa-share text-primary"></i> На сайт', 'url' => \Yii::$app->homeUrl],
             Yii::$app->user->isGuest ?
                 ['label' => 'Login', 'url' => ['/user/login']] :
                 ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',
