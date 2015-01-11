@@ -8,14 +8,13 @@ use yii\grid\GridView;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Пользователи';
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('<i class="fa fa-plus"></i> Добавить пользователя', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('<i class="fa fa-plus"></i> '.\Yii::t('app', 'Add'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([
@@ -25,17 +24,23 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'username',
             'email:email',
+            'first_name',
+            'last_name',
             [
                 'attribute' => 'role',
                 'filter' => User::getRoleArray(),
-                'value' => function($model) {
-                    return User::getRoleArray()[$model->role];
+                'value' => function($data) {
+                    $roles = [];
+                    foreach ($data->role as $k => $role) {
+                        $roles[] = $role->description;
+                    }
+                    return implode(', ', $roles);
                 }
             ], [
                 'attribute' => 'status_id',
                 'filter' => User::getStatusArray(),
-                'value' => function($model) {
-                    return User::getStatusArray()[$model->status_id];
+                'value' => function($data) {
+                    return User::getStatusArray()[$data->status_id];
                 }
             ],
             'created_date',
@@ -51,16 +56,16 @@ $this->params['breadcrumbs'][] = $this->title;
     #w0 > table > thead > tr:nth-child(1) > th:nth-child(1) {
         width: 40px;
     }
-    #w0 > table > thead > tr:nth-child(1) > th:nth-child(5) {
+    #w0 > table > thead > tr:nth-child(1) > th:nth-child(7) {
         width: 65px;
     }
-    #w0 > table > thead > tr:nth-child(1) > th:nth-child(6) {
+    #w0 > table > thead > tr:nth-child(1) > th:nth-child(8) {
         width: 150px;
     }
-    #w0 > table > thead > tr:nth-child(1) > th:nth-child(7) {
+    #w0 > table > thead > tr:nth-child(1) > th:nth-child(9) {
         width: 60px;
     }
-    #w0 > table > thead > tr:nth-child(1) > th:nth-child(4) {
+    #w0 > table > thead > tr:nth-child(1) > th:nth-child(6) {
         width: 130px;
     }
 </style>

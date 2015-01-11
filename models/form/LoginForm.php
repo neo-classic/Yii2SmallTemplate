@@ -1,6 +1,7 @@
 <?php
-namespace app\models;
+namespace app\models\form;
 
+use app\models\User;
 use Yii;
 use yii\base\Model;
 
@@ -26,6 +27,16 @@ class LoginForm extends Model
             ['password', 'validatePassword'],
         ];
     }
+
+    public function attributeLabels()
+    {
+        return [
+            'username' => \Yii::t('app', 'Username'),
+            'password' => \Yii::t('app', 'Password'),
+            'rememberMe' => \Yii::t('app', 'Remember Me'),
+        ];
+    }
+
 
     /**
      * Validates the password.

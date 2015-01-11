@@ -4,26 +4,29 @@ use yii\bootstrap\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
-/* @var $model \app\models\SignupForm */
+/* @var $model \app\models\form\SignupForm */
 
-$this->title = 'Signup';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = \Yii::t('app', 'Signup');
 ?>
 <div class="site-signup">
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>Please fill out the following fields to signup:</p>
-
     <div class="row">
-        <div class="col-lg-5">
-            <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
-            <?= $form->field($model, 'username') ?>
-            <?= $form->field($model, 'email') ?>
-            <?= $form->field($model, 'password')->passwordInput() ?>
-            <div class="form-group">
-                <?= Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
+        <?php $form = ActiveForm::begin([
+            'id' => 'form-signup',
+            'layout' => 'horizontal',
+        ]);
+        ?>
+        <?= $form->field($model, 'username') ?>
+        <?= $form->field($model, 'password')->passwordInput() ?>
+        <?= $form->field($model, 'email') ?>
+        <?= $form->field($model, 'firstName') ?>
+        <?= $form->field($model, 'lastName') ?>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <?= Html::submitButton(\Yii::t('app', 'Send'), ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
             </div>
-            <?php ActiveForm::end(); ?>
         </div>
+        <?php ActiveForm::end(); ?>
     </div>
 </div>

@@ -3,34 +3,38 @@ return [
     'adminDashboard' => [
         'type' => 2,
     ],
+    'viewProject' => [
+        'type' => 2,
+        'description' => 'View project',
+        'ruleName' => 'isCreator',
+    ],
     'user' => [
         'type' => 1,
-        'description' => 'Пользователь',
-        'ruleName' => 'userRole',
+        'description' => 'User',
+        'children' => [
+            'viewProject',
+        ],
     ],
     'client' => [
         'type' => 1,
-        'description' => 'Клиент',
-        'ruleName' => 'userRole',
+        'description' => 'Client',
         'children' => [
             'user',
         ],
     ],
     'manager' => [
         'type' => 1,
-        'description' => 'Менеджер',
-        'ruleName' => 'userRole',
+        'description' => 'Manager',
         'children' => [
             'client',
-            'adminDashboard',
         ],
     ],
     'admin' => [
         'type' => 1,
-        'description' => 'Админ',
-        'ruleName' => 'userRole',
+        'description' => 'Admin',
         'children' => [
             'manager',
+            'adminDashboard',
         ],
     ],
 ];

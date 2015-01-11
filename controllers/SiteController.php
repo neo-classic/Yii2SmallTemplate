@@ -48,6 +48,9 @@ class SiteController extends CommonController
 
     public function actionIndex()
     {
+        if (Yii::$app->db->schema->getTableSchema('user') === null) {
+            Yii::$app->response->redirect(['/install/index']);
+        }
         return $this->render('index');
     }
 

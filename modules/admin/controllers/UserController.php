@@ -2,7 +2,7 @@
 namespace app\modules\admin\controllers;
 
 use app\models\User;
-use app\models\UserSearch;
+use app\models\search\UserSearch;
 use app\modules\admin\components\AdminController;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -40,6 +40,11 @@ class UserController extends AdminController
             $model->setPassword($model->password);
             $model->generateAuthKey();
             if ($model->save()) {
+                if (isset($model->role)) {
+                    $auth = \Yii::$app->authManager;
+                    $role = $auth->getRole($model->role);
+                    $auth->assign($role, $model->id);
+                }
                 \Yii::$app->session->setFlash('success', 'Пользователь ' . $model->username . ' успешно добавлен');
                 return $this->redirect(['update', 'id' => $model->getPrimaryKey()]);
             }
@@ -59,6 +64,12 @@ class UserController extends AdminController
                 $model->setPassword($model->password);
             }
             if ($model->save()) {
+                if (isset($model->role)) {
+                    $auth = \Yii::$app->authManager;
+                    $role = $auth->getRole($model->role);
+                    $auth->revokeAll($model->id);
+                    $auth->assign($role, $model->id);
+                }
                 \Yii::$app->session->setFlash('success', 'Пользователь ' . $model->username . ' успешно обновлен');
             }
         }

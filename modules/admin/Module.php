@@ -5,6 +5,7 @@ use yii\web\ForbiddenHttpException;
 
 class Module extends \yii\base\Module
 {
+    public $defaultRoute = 'user';
 
     public function init()
     {

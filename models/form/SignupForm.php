@@ -1,6 +1,7 @@
 <?php
-namespace app\models;
+namespace app\models\form;
 
+use app\models\User;
 use yii\base\Model;
 use Yii;
 
@@ -12,6 +13,8 @@ class SignupForm extends Model
     public $username;
     public $email;
     public $password;
+    public $firstName;
+    public $lastName;
 
     /**
      * @inheritdoc
@@ -31,8 +34,23 @@ class SignupForm extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
+
+            [['firstName', 'lastName'], 'required'],
+            [['firstName', 'lastName'], 'string', 'min' => 2, 'max' => 255],
         ];
     }
+
+    public function attributeLabels()
+    {
+        return [
+            'username' => \Yii::t('app', 'Username'),
+            'email' => \Yii::t('app', 'E-mail'),
+            'firstName' => \Yii::t('app', 'First Name'),
+            'lastName' => \Yii::t('app', 'Last Name'),
+            'password' => \Yii::t('app', 'Password'),
+        ];
+    }
+
 
     /**
      * Signs user up.
@@ -46,9 +64,14 @@ class SignupForm extends Model
             $user->username = $this->username;
             $user->email = $this->email;
             $user->setPassword($this->password);
+            $user->first_name = $this->firstName;
+            $user->last_name = $this->lastName;
             $user->generateAuthKey();
-            $user->role = User::ROLE_USER;
-            $user->save();
+            if ($user->save()) {
+                $auth = \Yii::$app->authManager;
+                $role = $auth->getRole(User::ROLE_USER);
+                $auth->assign($role, $user->id);
+            }
             return $user;
         }
 

@@ -12,6 +12,8 @@ use yii\web\IdentityInterface;
  * @property string $username
  * @property string $email
  * @property string $password
+ * @property string $first_name
+ * @property string $last_name
  * @property string $password_reset_token
  * @property string $auth_key
  * @property integer $status_id
@@ -25,12 +27,13 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 1;
 
-    const ROLE_USER = 1;
-    const ROLE_CLIENT = 5;
-    const ROLE_MANAGER = 10;
-    const ROLE_ADMIN = 15;
+    const ROLE_USER = 'user';
+    const ROLE_CLIENT = 'client';
+    const ROLE_MANAGER = 'manager';
+    const ROLE_ADMIN = 'admin';
 
     public $old_password_hash = '';
+    public $role;
 
     /**
      * @inheritdoc
@@ -46,11 +49,11 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'email', 'password'], 'required'],
-            [['status_id', 'role'], 'integer'],
-            [['created_date', 'last_visit_date'], 'safe'],
+            [['username', 'email', 'password', 'first_name', 'last_name'], 'required'],
+            [['status_id'], 'integer'],
+            [['created_date', 'last_visit_date', 'role'], 'safe'],
             [['username'], 'string', 'max' => 45],
-            [['email', 'password', 'password_reset_token', 'auth_key'], 'string', 'max' => 255]
+            [['email', 'password', 'password_reset_token', 'auth_key', 'first_name', 'last_name'], 'string', 'max' => 255]
         ];
     }
 
@@ -58,11 +61,14 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             'id' => 'id',
-            'username' => 'Логин',
-            'email' => 'E-mail',
-            'status_id' => 'Статус',
-            'role' => 'Роль',
-            'created_date' => 'Дата создания',
+            'username' => \Yii::t('app', 'Username'),
+            'email' => \Yii::t('app', 'E-mail'),
+            'status_id' => \Yii::t('app', 'Status'),
+            'role' => \Yii::t('app', 'Role'),
+            'created_date' => \Yii::t('app', 'Created Date'),
+            'first_name' => \Yii::t('app', 'First Name'),
+            'last_name' => \Yii::t('app', 'Last Name'),
+            'password' => \Yii::t('app', 'Password'),
         ];
     }
 
@@ -173,6 +179,11 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->password = \Yii::$app->security->generatePasswordHash($password);
     }
+    
+    public static function getPassword($password)
+    {
+        return \Yii::$app->security->generatePasswordHash($password);
+    }
 
     /**
      * Generates "remember me" authentication key
@@ -201,25 +212,37 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getRoleArray()
     {
         return [
-            self::ROLE_USER => 'Пользователь',
-            self::ROLE_CLIENT => 'Клиент',
-            self::ROLE_MANAGER => 'Менеджер',
-            self::ROLE_ADMIN => 'Админ',
+            self::ROLE_USER => \Yii::t('app', 'User'),
+            self::ROLE_CLIENT => \Yii::t('app', 'Client'),
+            self::ROLE_MANAGER => \Yii::t('app', 'Manager'),
+            self::ROLE_ADMIN => \Yii::t('app', 'Admin'),
         ];
     }
 
     public static function getStatusArray()
     {
         return [
-            self::STATUS_DELETED => 'Выкл',
-            self::STATUS_ACTIVE => 'Вкл',
+            self::STATUS_DELETED => \Yii::t('app', 'Off'),
+            self::STATUS_ACTIVE => \Yii::t('app', 'On'),
         ];
     }
 
     public function afterFind()
     {
         $this->old_password_hash = $this->password;
+        $this->role = \Yii::$app->authManager->getRolesByUser($this->id);
         parent::afterFind();
+    }
+
+    public function getFullName()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function beforeDelete()
+    {
+        \Yii::$app->authManager->revokeAll($this->id);
+        return parent::beforeDelete();
     }
 
 } 

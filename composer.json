@@ -23,7 +23,10 @@
         "creocoder/yii2-nested-set-behavior": "dev-master",
         "yiisoft/yii2-jui": "2.0.1",
         "vova07/yii2-select2-widget": "0.1.0",
-        "kartik-v/yii2-widget-rating": "*"
+        "kartik-v/yii2-widget-rating": "*",
+        "kartik-v/yii2-grid": "*",
+        "kartik-v/yii2-mpdf": "@dev",
+        "kartik-v/yii2-editable": "*"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

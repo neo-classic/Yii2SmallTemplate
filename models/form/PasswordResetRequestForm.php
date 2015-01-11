@@ -1,6 +1,7 @@
 <?php
-namespace app\models;
+namespace app\models\form;
 
+use app\models\User;
 use yii\base\Model;
 
 /**
@@ -21,11 +22,19 @@ class PasswordResetRequestForm extends Model
             ['email', 'email'],
             ['email', 'exist',
                 'targetClass' => '\app\models\User',
-                'filter' => ['status' => User::STATUS_ACTIVE],
-                'message' => 'There is no user with such email.'
+                'filter' => ['status_id' => User::STATUS_ACTIVE],
+                'message' => \Yii::t('app', 'There is no user with such email.')
             ],
         ];
     }
+
+    public function attributeLabels()
+    {
+        return [
+            'email' => \Yii::t('app', 'E-mail'),
+        ];
+    }
+
 
     /**
      * Sends an email with a link, for resetting the password.
@@ -36,7 +45,7 @@ class PasswordResetRequestForm extends Model
     {
         /* @var $user User */
         $user = User::findOne([
-            'status' => User::STATUS_ACTIVE,
+            'status_id' => User::STATUS_ACTIVE,
             'email' => $this->email,
         ]);
 
