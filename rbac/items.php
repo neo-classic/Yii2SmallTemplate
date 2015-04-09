@@ -10,14 +10,14 @@ return [
     ],
     'user' => [
         'type' => 1,
-        'description' => 'User',
+        'description' => 'Пользователь',
         'children' => [
             'viewProject',
         ],
     ],
     'client' => [
         'type' => 1,
-        'description' => 'Client',
+        'description' => 'Клиент',
         'children' => [
             'user',
         ],
@@ -31,7 +31,7 @@ return [
     ],
     'admin' => [
         'type' => 1,
-        'description' => 'Admin',
+        'description' => 'Админ',
         'children' => [
             'manager',
             'adminDashboard',

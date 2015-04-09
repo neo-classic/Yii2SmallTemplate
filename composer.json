@@ -1,18 +1,6 @@
 {
-    "name": "yiisoft/yii2-app-basic",
-    "description": "Yii 2 Basic Application Template",
-    "keywords": ["yii2", "framework", "basic", "application template"],
-    "homepage": "http://www.yiiframework.com/",
-    "type": "project",
-    "license": "BSD-3-Clause",
-    "support": {
-        "issues": "https://github.com/yiisoft/yii2/issues?state=open",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
-        "source": "https://github.com/yiisoft/yii2"
-    },
-    "minimum-stability": "stable",
+    "name": "Yii2SmallTemplate",
+    "description": "Yii 2 Small Template for simple sites",
     "require": {
         "php": ">=5.4.0",
         "yiisoft/yii2": "*",
@@ -20,19 +8,17 @@
         "yiisoft/yii2-swiftmailer": "*",
         "yiisoft/yii2-imagine": "*",
         "vova07/yii2-imperavi-widget": "*",
-        "creocoder/yii2-nested-set-behavior": "dev-master",
         "yiisoft/yii2-jui": "*",
         "vova07/yii2-select2-widget": "0.1.0",
         "kartik-v/yii2-widget-rating": "*",
         "kartik-v/yii2-grid": "*",
         "kartik-v/yii2-mpdf": "@dev",
-        "kartik-v/yii2-editable": "*"
+        "kartik-v/yii2-editable": "*",
+        "kartik-v/yii2-widget-switchinput": "*"
     },
     "require-dev": {
-        "yiisoft/yii2-codeception": "*",
         "yiisoft/yii2-debug": "*",
-        "yiisoft/yii2-gii": "*",
-        "yiisoft/yii2-faker": "*"
+        "yiisoft/yii2-gii": "*"
     },
     "config": {
         "process-timeout": 1800
