@@ -3,6 +3,7 @@ namespace app\components\behaviors;
 
 use yii\base\Behavior;
 use yii\db\ActiveRecord;
+use yii\imagine\Image;
 use yii\web\UploadedFile;
 
 class MultiFileUploadBehavior extends Behavior
@@ -29,11 +30,20 @@ class MultiFileUploadBehavior extends Behavior
         if (isset($files) && count($files) > 0) {
             foreach ($files as $k => $file) {
                 $fileName = $this->_getFileName($file);
-                if ($file->saveAs($this->_getFolder() . $fileName)) {
+                if ($file->saveAs($this->_getFolder() . 'o_' . $fileName)) {
                     $fileModel = new $this->relatedModel;
                     $fileModel->{$this->relatedOwnerField} = $this->owner->getPrimaryKey();
                     $fileModel->{$this->relatedModelField} = $fileName;
                     $fileModel->save();
+
+                    Image::thumbnail($this->_getFolder() . 'o_' . $fileName, 160, 90)
+                        ->save($this->_getFolder() . 's_' . $fileName, ['quality' => 90]);
+                    Image::thumbnail($this->_getFolder() . 'o_' . $fileName, 960, 540)
+                        ->save($this->_getFolder() . 'l_' . $fileName, ['quality' => 90]);
+                    Image::thumbnail($this->_getFolder() . 'o_' . $fileName, 400, 225)
+                        ->save($this->_getFolder() . 'm_' . $fileName, ['quality' => 90]);
+                    Image::crop($this->_getFolder() . 'm_' . $fileName, 160, 90, [0, 0])
+                        ->save($this->_getFolder() . 'c_' . $fileName, ['quality' => 90]);
                 } else {
                     die(var_dump($file->getErrors()));
                 }
@@ -51,6 +61,9 @@ class MultiFileUploadBehavior extends Behavior
 
     protected function _getFileName(UploadedFile $file)
     {
+        if (isset($this->owner->url)) {
+            return $this->owner->url . '_' . mt_rand() . pathinfo($file, PATHINFO_EXTENSION);
+        }
         return mt_rand() . '.' . pathinfo($file, PATHINFO_EXTENSION);
     }
 
