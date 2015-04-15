@@ -9,12 +9,13 @@
         "yiisoft/yii2-imagine": "*",
         "vova07/yii2-imperavi-widget": "*",
         "yiisoft/yii2-jui": "*",
-        "vova07/yii2-select2-widget": "0.1.0",
         "kartik-v/yii2-widget-rating": "*",
         "kartik-v/yii2-grid": "*",
         "kartik-v/yii2-mpdf": "@dev",
         "kartik-v/yii2-editable": "*",
-        "kartik-v/yii2-widget-switchinput": "*"
+        "kartik-v/yii2-widget-switchinput": "*",
+        "kartik-v/yii2-widget-select2": "*",
+        "fortawesome/font-awesome": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "*",
