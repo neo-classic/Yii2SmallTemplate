@@ -31,4 +31,9 @@ $this->title = \Yii::t('app', 'Login');
         </div>
         <?php ActiveForm::end(); ?>
     </div>
+    <div class="row">
+        <?= yii\authclient\widgets\AuthChoice::widget([
+            'baseAuthUrl' => ['user/auth']
+        ]) ?>
+    </div>
 </div>

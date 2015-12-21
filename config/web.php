@@ -54,6 +54,42 @@ $config = [
                 ],
             ],
         ],
+        'authClientCollection' => [
+            'class' => 'yii\authclient\Collection',
+            'clients' => [
+                // https://console.developers.google.com/project
+                'google' => [
+                    'class' => 'yii\authclient\clients\GoogleOAuth',
+                    'clientId' => 'google_client_id',
+                    'clientSecret' => 'google_client_secret',
+                ],
+                // https://developers.facebook.com/apps
+                'facebook' => [
+                    'class' => 'yii\authclient\clients\Facebook',
+                    //'authUrl' => 'https://www.facebook.com/dialog/oauth?display=popup',
+                    'clientId' => '573233759491564',
+                    'clientSecret' => '324b3c43bb6572874d96d9f0676c8471',
+                ],
+                // http://vk.com/editapp?act=create
+                'vkontakte' => [
+                    'class' => 'yii\authclient\clients\VKontakte',
+                    'clientId' => 'vkontakte_client_id',
+                    'clientSecret' => 'vkontakte_client_secret',
+                ],
+                // https://dev.twitter.com/apps/new
+                'twitter' => [
+                    'class' => 'yii\authclient\clients\Twitter',
+                    'consumerKey' => 'twitter_consumer_key',
+                    'consumerSecret' => 'twitter_consumer_secret',
+                ],
+                // https://oauth.yandex.ru/client/new
+                'yandex' => [
+                    'class' => 'yii\authclient\clients\YandexOAuth',
+                    'clientId' => 'yandex_client_id',
+                    'clientSecret' => 'yandex_client_secret',
+                ],
+            ],
+        ],
     ],
     'modules' => [
         'admin' => [
@@ -64,12 +100,14 @@ $config = [
 ];
 
 if (YII_ENV_DEV) {
-    // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
-    $config['modules']['debug'] = 'yii\debug\Module';
+    $config['modules']['debug']['class'] = 'yii\debug\Module';
+    $config['modules']['debug']['enableDebugLogs'] = false;
+    $config['modules']['debug']['allowedIPs'] = ['*.*.*.*'];
 
     $config['bootstrap'][] = 'gii';
-    $config['modules']['gii'] = 'yii\gii\Module';
+    $config['modules']['gii']['class'] = 'yii\gii\Module';
+    $config['modules']['gii']['allowedIPs'] = ['*.*.*.*'];
 }
 
 return $config;

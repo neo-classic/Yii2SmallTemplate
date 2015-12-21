@@ -19,8 +19,8 @@ class InstallController extends Controller
             "CREATE TABLE `user` (
               `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
               `username` varchar(45) NOT NULL,
-              `first_name` varchar(255) NOT NULL,
-              `last_name` varchar(255) NOT NULL,
+              `first_name` varchar(255) NULL,
+              `last_name` varchar(255) NULL,
               `email` varchar(255) NOT NULL,
               `password` varchar(255) NOT NULL,
               `password_reset_token` varchar(255) DEFAULT NULL,
@@ -31,6 +31,17 @@ class InstallController extends Controller
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;"
         )->execute();
+        $db->createCommand("
+            CREATE TABLE auth (
+                id int(11) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                user_id int(11) unsigned NOT NULL,
+                source varchar(255) NOT NULL,
+                source_id varchar(255) NOT NULL
+            );
+        ")->execute();
+        $db->createCommand("
+            ALTER TABLE auth ADD FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE ON UPDATE CASCADE;
+        ")->execute();
         echo "user table created...<br />";
         $this->userInit();
         echo "wiki table created...<br />";

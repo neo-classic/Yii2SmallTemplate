@@ -49,10 +49,11 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'email', 'password', 'first_name', 'last_name'], 'required'],
+            [['username', 'email', 'password'], 'required'],
             [['status_id'], 'integer'],
             [['created_date', 'last_visit_date', 'role'], 'safe'],
             [['username'], 'string', 'max' => 45],
+            [['first_name', 'last_name'], 'string', 'max' => 255],
             [['email', 'password', 'password_reset_token', 'auth_key', 'first_name', 'last_name'], 'string', 'max' => 255]
         ];
     }
@@ -243,6 +244,14 @@ class User extends ActiveRecord implements IdentityInterface
     {
         \Yii::$app->authManager->revokeAll($this->id);
         return parent::beforeDelete();
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAuths()
+    {
+        return $this->hasMany(Auth::className(), ['user_id' => 'id']);
     }
 
 } 
