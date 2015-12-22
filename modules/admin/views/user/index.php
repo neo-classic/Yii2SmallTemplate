@@ -10,11 +10,8 @@ use yii\grid\GridView;
 $this->title = 'Пользователи';
 ?>
 <div class="user-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
-        <?= Html::a('<i class="fa fa-plus"></i> '.\Yii::t('app', 'Add'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('<i class="fa fa-plus"></i> '.\Yii::t('app', 'Add'), ['create'], ['class' => 'btn btn-success btn-flat']) ?>
     </p>
 
     <?= GridView::widget([

@@ -8,9 +8,6 @@ use yii\helpers\Html;
 $this->title = 'Редактирование пользователя ' . $model->username;
 ?>
 <div class="user-update">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>

@@ -5,6 +5,6 @@ use app\components\CommonController;
 
 class AdminController extends CommonController
 {
-    public $layout = 'layout-admin';
+    public $layout = 'adminlte/main';
     public $menu = [];
 } 

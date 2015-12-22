@@ -28,7 +28,7 @@ use yii\bootstrap\ActiveForm;
 
     <div class="form-group">
         <div class="col-sm-offset-3 col-sm-9">
-            <?= Html::submitButton($model->isNewRecord ? \Yii::t('app', 'Add') : \Yii::t('app', 'Save'), ['class' => 'btn btn-primary']); ?>
+            <?= Html::submitButton($model->isNewRecord ? \Yii::t('app', 'Add') : \Yii::t('app', 'Save'), ['class' => 'btn btn-primary btn-flat']); ?>
         </div>
     </div>
 
