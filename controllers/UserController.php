@@ -65,12 +65,17 @@ class UserController extends CommonController
                     $user->generatePasswordResetToken();
                     $transaction = $user->getDb()->beginTransaction();
                     if ($user->save()) {
+
                         $auth = new Auth([
                             'user_id' => $user->id,
                             'source' => $client->getId(),
                             'source_id' => (string)$attributes['id'],
                         ]);
                         if ($auth->save()) {
+                            $auth = Yii::$app->authManager;
+                            $role = $auth->getRole(User::ROLE_USER);
+                            $auth->assign($role, $user->getPrimaryKey());
+
                             $transaction->commit();
                             Yii::$app->user->login($user);
                         } else {
