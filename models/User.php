@@ -1,6 +1,7 @@
 <?php
 namespace app\models;
 
+use app\components\behaviors\ImageFromDbBehavior;
 use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
@@ -9,11 +10,11 @@ use yii\web\IdentityInterface;
  * This is the model class for table "user".
  *
  * @property integer $id
- * @property string $username
  * @property string $email
  * @property string $password
  * @property string $first_name
  * @property string $last_name
+ * @property resource $avatar
  * @property string $password_reset_token
  * @property string $auth_key
  * @property integer $status_id
@@ -43,18 +44,32 @@ class User extends ActiveRecord implements IdentityInterface
         return 'user';
     }
 
+    public function behaviors()
+    {
+        return [
+            'imageFromDb' => [
+                'class' => ImageFromDbBehavior::className(),
+                'imageField' => 'avatar',
+                'imageMimeField' => 'avatar_mime',
+                'imageDir' => 'uploads',
+            ],
+        ];
+    }
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['username', 'email', 'password'], 'required'],
+            [['email', 'password'], 'required'],
             [['status_id'], 'integer'],
             [['created_date', 'last_visit_date', 'role'], 'safe'],
-            [['username'], 'string', 'max' => 45],
             [['first_name', 'last_name'], 'string', 'max' => 255],
-            [['email', 'password', 'password_reset_token', 'auth_key', 'first_name', 'last_name'], 'string', 'max' => 255]
+            [['email', 'password', 'password_reset_token', 'auth_key', 'first_name', 'last_name'], 'string', 'max' => 255],
+
+            [['avatar_mime'], 'string', 'max' => 4],
+            [['avatar'], 'image', 'extensions' => 'jpg, jpeg, png, gif', 'maxWidth' => 1024, 'maxHeight' => 800],
         ];
     }
 
@@ -62,7 +77,6 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             'id' => 'id',
-            'username' => \Yii::t('app', 'Username'),
             'email' => \Yii::t('app', 'E-mail'),
             'status_id' => \Yii::t('app', 'Status'),
             'role' => \Yii::t('app', 'Role'),
@@ -70,6 +84,7 @@ class User extends ActiveRecord implements IdentityInterface
             'first_name' => \Yii::t('app', 'First Name'),
             'last_name' => \Yii::t('app', 'Last Name'),
             'password' => \Yii::t('app', 'Password'),
+            'avatar' => 'Аватар',
         ];
     }
 
@@ -99,6 +114,17 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findByUsername($username)
     {
         return static::findOne(['username' => $username, 'status_id' => self::STATUS_ACTIVE]);
+    }
+
+    /**
+     * Finds user by email
+     *
+     * @param string $email
+     * @return static|null
+     */
+    public static function findByEmail(string $email)
+    {
+        return static::findOne(['email' => $email, 'status_id' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -231,13 +257,21 @@ class User extends ActiveRecord implements IdentityInterface
     public function afterFind()
     {
         $this->old_password_hash = $this->password;
-        $this->role = \Yii::$app->authManager->getRolesByUser($this->id);
+        if (isset(array_keys(\Yii::$app->authManager->getRolesByUser($this->id))[0])) {
+            $this->role = array_keys(\Yii::$app->authManager->getRolesByUser($this->id))[0];
+        }
         parent::afterFind();
     }
 
-    public function getFullName()
+    public function getFullname($short = false)
     {
-        return $this->first_name . ' ' . $this->last_name;
+        if (empty($this->last_name) || empty($this->first_name)) {
+            return $this->email;
+        }
+        if ($short) {
+            return $this->last_name . ' ' . mb_substr($this->first_name, 0, 1).'.';
+        }
+        return $this->last_name . ' ' . $this->first_name;
     }
 
     public function beforeDelete()
@@ -252,6 +286,21 @@ class User extends ActiveRecord implements IdentityInterface
     public function getAuths()
     {
         return $this->hasMany(Auth::className(), ['user_id' => 'id']);
+    }
+
+    public function getAvatarImg($size = '240x240')
+    {
+        if ($this->avatar) {
+            return $this->getImage($this->getPrimaryKey(), $size);
+        } else {
+            return '/uploads/user/default.png';
+        }
+    }
+
+    public function isTrueEmail()
+    {
+        $emailParts = explode('@', $this->email);
+        return !in_array($emailParts[1], ['vk.com', 'twitter.com']);
     }
 
 } 

@@ -3,10 +3,10 @@
 namespace app\controllers;
 
 use app\components\CommonController;
+use app\models\form\ContactForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use app\models\ContactForm;
 
 class SiteController extends CommonController
 {
@@ -57,6 +57,15 @@ class SiteController extends CommonController
     public function actionContact()
     {
         $model = new ContactForm();
+
+        if (!Yii::$app->user->isGuest) {
+            $model->name = Yii::$app->user->identity->fullName;
+        }
+        $this->setSeo([
+            'h1' => 'Форма обратной связи',
+            'title' => 'Обратная связь',
+        ]);
+
         if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
             Yii::$app->session->setFlash('contactFormSubmitted');
 

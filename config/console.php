@@ -16,10 +16,9 @@ return [
     'components' => [
         'authManager' => [
             'class' => 'yii\rbac\PhpManager',
-            'defaultRoles' => ['user', 'client', 'admin'],
         ],
         'cache' => [
-            'class' => 'yii\caching\FileCache',
+            'class' => 'yii\caching\DummyCache',
         ],
         'log' => [
             'targets' => [

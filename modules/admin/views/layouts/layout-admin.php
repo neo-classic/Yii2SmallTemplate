@@ -58,7 +58,7 @@ AppAsset::register($this);
             ['label' => '<i class="fa fa-share text-primary"></i> На сайт', 'url' => \Yii::$app->homeUrl],
             Yii::$app->user->isGuest ?
                 ['label' => 'Login', 'url' => ['/user/login']] :
-                ['label' => 'Logout (' . Yii::$app->user->identity->username . ')',
+                ['label' => 'Logout (' . Yii::$app->user->identity->email . ')',
                     'url' => ['/user/logout'],
                     'linkOptions' => ['data-method' => 'post']],
         ],

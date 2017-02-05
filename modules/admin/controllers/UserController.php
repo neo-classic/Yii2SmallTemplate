@@ -45,7 +45,7 @@ class UserController extends AdminController
                     $role = $auth->getRole($model->role);
                     $auth->assign($role, $model->id);
                 }
-                \Yii::$app->session->setFlash('success', 'Пользователь ' . $model->username . ' успешно добавлен');
+                \Yii::$app->session->setFlash('success', 'Пользователь ' . $model->email . ' успешно добавлен');
                 return $this->redirect(['update', 'id' => $model->getPrimaryKey()]);
             }
         }
@@ -70,7 +70,7 @@ class UserController extends AdminController
                     $auth->revokeAll($model->id);
                     $auth->assign($role, $model->id);
                 }
-                \Yii::$app->session->setFlash('success', 'Пользователь ' . $model->username . ' успешно обновлен');
+                \Yii::$app->session->setFlash('success', 'Пользователь ' . $model->email . ' успешно обновлен');
             }
         }
 

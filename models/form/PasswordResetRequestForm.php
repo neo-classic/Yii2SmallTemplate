@@ -3,6 +3,7 @@ namespace app\models\form;
 
 use app\models\User;
 use yii\base\Model;
+use yii\helpers\Html;
 
 /**
  * Password reset request form
@@ -55,10 +56,14 @@ class PasswordResetRequestForm extends Model
             }
 
             if ($user->save()) {
-                return \Yii::$app->mailer->compose('passwordResetToken', ['user' => $user])
-                    ->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->name . ' robot'])
+                $resetLink = \Yii::$app->urlManager->createAbsoluteUrl(['/user/reset-password', 'token' => $user->password_reset_token]);
+                return \Yii::$app->mailer->compose()
                     ->setTo($this->email)
-                    ->setSubject('Password reset for ' . \Yii::$app->name)
+                    ->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->name . ' robot'])
+                    ->setSubject('Запрос на восстановление пароля')
+                    ->setHtmlBody("<p>Добрый день, {$user->fullName}</p>
+                        <p>Для восстановления пароля, перейдите по ссылке ниже:</p>
+                        <p>" . Html::a(Html::encode($resetLink), $resetLink) . '</p>')
                     ->send();
             }
         }

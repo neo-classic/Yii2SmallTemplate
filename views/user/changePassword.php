@@ -9,7 +9,7 @@ use yii\bootstrap\ActiveForm;
 $this->title = \Yii::t('app', 'Change Password');
 ?>
 <div class="change-password">
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1 class="text-center"><i class="fa fa-key"></i> <?= Html::encode($this->title) ?></h1>
 
     <div class="row">
         <?php $form = ActiveForm::begin([
@@ -22,7 +22,7 @@ $this->title = \Yii::t('app', 'Change Password');
 
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
-                <?= Html::submitButton(\Yii::t('app', 'Save'), ['class' => 'btn btn-primary']) ?>
+                <?= Html::submitButton('<i class="fa fa-floppy-o"></i> ' . \Yii::t('app', 'Save'), ['class' => 'btn btn-primary']) ?>
             </div>
         </div>
         <?php ActiveForm::end(); ?>

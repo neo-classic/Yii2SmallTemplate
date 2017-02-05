@@ -13,16 +13,17 @@ class InstallController extends Controller
         if (Yii::$app->db->schema->getTableSchema('user') !== null) {
             Yii::$app->response->redirect(['/site/index']);
         }
-        
+
         $db = \Yii::$app->db;
         $db->createCommand(
             "CREATE TABLE `user` (
               `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-              `username` varchar(45) NOT NULL,
               `first_name` varchar(255) NULL,
               `last_name` varchar(255) NULL,
               `email` varchar(255) NOT NULL,
               `password` varchar(255) NOT NULL,
+              `avatar` longblob DEFAULT NULL,
+              `avatar_mime` varchar(4) DEFAULT NULL,
               `password_reset_token` varchar(255) DEFAULT NULL,
               `auth_key` varchar(255) NOT NULL,
               `status_id` tinyint(1) NOT NULL DEFAULT '1',
@@ -45,25 +46,25 @@ class InstallController extends Controller
         echo "user table created...<br />";
         $this->userInit();
         echo "wiki table created...<br />";
-        Yii::$app->response->redirect(['/site/index']);
+
+        return $this->redirect(['/site/index']);
     }
-    
+
     /**
      * @return User
      */
     private function userInit()
     {
-        Yii::$app->db->createCommand('INSERT INTO user(username, email, password, first_name, last_name, auth_key) VALUES (:un, :email, :pass, :fn, :ln, :ak)', [
-            ':un' => 'admin',
+        Yii::$app->db->createCommand('INSERT INTO user(email, password, first_name, last_name, auth_key) VALUES (:email, :pass, :fn, :ln, :ak)', [
             ':email' => 'admin@admin.com',
             ':pass' => User::getPassword('admin'),
             ':fn' => 'admin',
             ':ln' => 'admin',
             ':ak' => \Yii::$app->security->generateRandomString(),
         ])->execute();
-        $this->rbacInit(Yii::$app->db->createCommand('SELECT id FROM user WHERE username="admin"')->queryScalar());
+        $this->rbacInit(Yii::$app->db->createCommand('SELECT id FROM user WHERE email="admin@admin.com"')->queryScalar());
     }
-    
+
     private function rbacInit($adminId)
     {
         $auth = \Yii::$app->authManager;
@@ -74,15 +75,6 @@ class InstallController extends Controller
             $adminDashboard = $auth->createPermission('adminDashboard');
         }
         $auth->add($adminDashboard);
-
-        // Просмотр проекта
-        $viewProjectRule = new ViewProjectRule();
-        $auth->add($viewProjectRule);
-
-        $viewProject = $auth->createPermission('viewProject');
-        $viewProject->description = 'View project';
-        $viewProject->ruleName = $viewProjectRule->name;
-        $auth->add($viewProject);
 
         // Добавляем роли
         $user = $auth->createRole(User::ROLE_USER);
@@ -107,7 +99,6 @@ class InstallController extends Controller
         $auth->addChild($admin, $manager);
 
         // Назначаем доступы
-        $auth->addChild($user, $viewProject);
         $auth->addChild($admin, $adminDashboard);
 
         $role = $auth->getRole(User::ROLE_ADMIN);

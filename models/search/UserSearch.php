@@ -11,7 +11,7 @@ class UserSearch extends User
     {
         return [
             [['id', 'status_id', 'role'], 'integer'],
-            [['username', 'created_date', 'email', 'first_name', 'last_name'], 'safe'],
+            [['created_date', 'email', 'first_name', 'last_name'], 'safe'],
         ];
     }
 
@@ -42,8 +42,7 @@ class UserSearch extends User
         $query->andFilterWhere(['id' => $this->id]);
         $query->andFilterWhere(['role' => $this->role]);
         $query->andFilterWhere(['status_id' => $this->status_id]);
-        $query->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'creation_date', $this->created_date])
+        $query->andFilterWhere(['like', 'creation_date', $this->created_date])
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'first_name', $this->first_name])
             ->andFilterWhere(['like', 'last_name', $this->last_name]);

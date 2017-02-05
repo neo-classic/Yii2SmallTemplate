@@ -31,7 +31,7 @@ class UserController extends CommonController
      * @param yii\authclient\ClientInterface $client
      * @return boolean|yii\web\Response
      */
-    public function oAuthSuccess($client)
+    public function onAuthSuccess($client)
     {
         $attributes = $client->getUserAttributes();
         /* @var $auth Auth */
@@ -41,41 +41,71 @@ class UserController extends CommonController
         ])->one();
 
         if (Yii::$app->user->isGuest) {
-            if ($auth) { // login
+            if ($auth) { // авторизация
                 $user = $auth->user;
                 Yii::$app->user->login($user);
-            } else { // signup
+            } else { // регистрация
                 if (isset($attributes['email']) && User::find()->where(['email' => $attributes['email']])->exists()) {
                     Yii::$app->getSession()->setFlash('error', [
-                        Yii::t('app', "User with the same email as in {client} account already exists but isn't linked to it. Login using email first to link it.", ['client' => $client->getTitle()]),
+                        Yii::t('app', "Пользователь с такой электронной почтой как в {client} уже существует, но с ним не связан. Для начала войдите на сайт использую электронную почту, для того, что бы связать её.", ['client' => $client->getTitle()]),
                     ]);
                 } else {
                     $password = Yii::$app->security->generateRandomString(6);
-                    if (isset($attributes['login'])) {
-                        $username = $attributes['login'];
-                    } else {
-                        $username = $attributes['name'];
-                    }
-                    $user = new User([
-                        'username' => $username,
-                        'email' => $attributes['email'],
+                    $userAttrs = [
+                        'email' => $attributes['email'] ?? $attributes['emails'][0]['value'] ?? $attributes['default_email'] ?? '',
                         'password' => $password,
-                    ]);
+                    ];
+
+                    if ($client->getId() == 'facebook') {
+                        $userAttrs['first_name'] = explode(' ', $attributes['name'])[0];
+                        $userAttrs['last_name'] = explode(' ', $attributes['name'])[1];
+                        $userAttrs['avatar'] = file_get_contents("https://graph.facebook.com/{$attributes['id']}/picture?type=large");
+                        $userAttrs['avatar_mime'] = 'jpg';
+                    }
+                    if ($client->getId() == 'google') {
+                        $userAttrs['first_name'] = $attributes['name']['givenName'];
+                        $userAttrs['last_name'] = $attributes['name']['familyName'];
+                        $userAttrs['avatar'] = file_get_contents(str_replace('sz=50', 'sz=300', $attributes['image']['url']));
+                        $userAttrs['avatar_mime'] = 'jpg';
+                    }
+                    if ($client->getId() == 'yandex') {
+                        $userAttrs['first_name'] = $attributes['first_name'];
+                        $userAttrs['last_name'] = $attributes['last_name'];
+                    }
+                    if ($client->getId() == 'twitter') {
+                        $userAttrs['first_name'] = explode(' ', $attributes['name'])[1];
+                        $userAttrs['last_name'] = explode(' ', $attributes['name'])[0];
+                        $userAttrs['email'] = $attributes['screen_name'] . '@twitter.com';
+                        $userAttrs['avatar'] = file_get_contents($attributes['profile_image_url_https']);
+                        $au = explode('.', $attributes['profile_image_url_https']);
+                        $fileMime = array_pop($au);
+                        $userAttrs['avatar_mime'] = $fileMime;
+                    }
+                    if ($client->getId() == 'vkontakte') {
+                        $userAttrs['first_name'] = $attributes['first_name'];
+                        $userAttrs['last_name'] = $attributes['last_name'];
+                        $userAttrs['email'] = $attributes['screen_name'] . '@vk.com';
+                        $userAttrs['avatar'] = file_get_contents($attributes['photo']);
+                        $au = explode('.', $attributes['photo']);
+                        $fileMime = array_pop($au);
+                        $userAttrs['avatar_mime'] = $fileMime;
+                    }
+
+
+                    $user = new User($userAttrs);
                     $user->generateAuthKey();
                     $user->generatePasswordResetToken();
                     $transaction = $user->getDb()->beginTransaction();
                     if ($user->save()) {
-
                         $auth = new Auth([
                             'user_id' => $user->id,
                             'source' => $client->getId(),
                             'source_id' => (string)$attributes['id'],
                         ]);
                         if ($auth->save()) {
-                            $auth = Yii::$app->authManager;
+                            $auth = \Yii::$app->authManager;
                             $role = $auth->getRole(User::ROLE_USER);
-                            $auth->assign($role, $user->getPrimaryKey());
-
+                            $auth->assign($role, $user->id);
                             $transaction->commit();
                             Yii::$app->user->login($user);
                         } else {
@@ -86,8 +116,8 @@ class UserController extends CommonController
                     }
                 }
             }
-        } else { // user already logged in
-            if (!$auth) { // add auth provider
+        } else { // Пользователь уже зарегистрирован
+            if (!$auth) { // добавляем внешний сервис аутентификации
                 $auth = new Auth([
                     'user_id' => Yii::$app->user->id,
                     'source' => $client->getId(),
@@ -192,4 +222,4 @@ class UserController extends CommonController
 
         return $this->render('changePassword', ['model' => $model]);
     }
-} 
+}
